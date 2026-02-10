@@ -1,0 +1,83 @@
+from abc import ABC, abstractmethod
+from typing import List
+
+# Абстрактний клас Vehicle
+class Vehicle(ABC):
+    def __init__(self, brand: str, speed: float):
+        self.brand = brand
+        self.speed = speed
+    
+    @abstractmethod
+    def move(self) -> str:
+        pass
+    
+    def get_info(self) -> str:
+        return f"{self.brand} (швидкість: {self.speed} км/год)"
+
+# Інтерфейс Refuelable
+class Refuelable(ABC):
+    @abstractmethod
+    def refill(self) -> str:
+        pass
+
+# Похідний клас Car
+class Car(Vehicle, Refuelable):
+    def __init__(self, brand: str, speed: float, fuel_type: str):
+        super().__init__(brand, speed)
+        self.fuel_type = fuel_type
+    
+    def move(self) -> str:
+        return f"Автомобіль {self.brand} їде по дорозі зі швидкістю {self.speed} км/год"
+    
+    def refill(self) -> str:
+        return f"Автомобіль {self.brand} заправлений {self.fuel_type}"
+
+# Похідний клас Bicycle
+class Bicycle(Vehicle):
+    def __init__(self, brand: str, speed: float, has_basket: bool):
+        super().__init__(brand, speed)
+        self.has_basket = has_basket
+    
+    def move(self) -> str:
+        basket_info = " з кошиком" if self.has_basket else ""
+        return f"Велосипед {self.brand}{basket_info} їде велосипедною доріжкою зі швидкістю {self.speed} км/год"
+
+# Похідний клас Airplane
+class Airplane(Vehicle, Refuelable):
+    def __init__(self, brand: str, speed: float, altitude: float):
+        super().__init__(brand, speed)
+        self.altitude = altitude
+    
+    def move(self) -> str:
+        return f"Літак {self.brand} летить на висоті {self.altitude} м зі швидкістю {self.speed} км/год"
+    
+    def refill(self) -> str:
+        return f"Літак {self.brand} заправлений авіапаливом"
+
+# Демонстрація поліморфізму
+def demonstrate_polymorphism():
+    # Створення списку транспортних засобів
+    vehicles: List[Vehicle] = [
+        Car("Toyota", 120, "бензин"),
+        Bicycle("Ukraine", 25, True),
+        Airplane("Boeing 737", 850, 10000),
+        Car("Tesla", 180, "електрика"),
+        Bicycle("Stels", 20, False),
+        Airplane("Airbus A320", 900, 11000)
+    ]
+    
+    print("=== Демонстрація руху транспортних засобів ===")
+    for vehicle in vehicles:
+        print(f"- {vehicle.move()}")
+    
+    print("\n=== Демонстрація заправки ===")
+    for vehicle in vehicles:
+        if isinstance(vehicle, Refuelable):
+            print(f"- {vehicle.refill()}")
+    
+    print("\n=== Загальна інформація ===")
+    for i, vehicle in enumerate(vehicles, 1):
+        print(f"{i}. {vehicle.get_info()}")
+
+if __name__ == "__main__":
+    demonstrate_polymorphism()
